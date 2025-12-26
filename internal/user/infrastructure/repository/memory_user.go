@@ -14,7 +14,7 @@ func (r *MemoryUserRepository) Create(userEntity *domain.User) (*domain.User, er
 	r.users = append(r.users, *userEntity)
 	return userEntity, nil
 }
-func (r MemoryUserRepository) GetUserByID(id string) (*domain.User, error) {
+func (r *MemoryUserRepository) GetUserByID(id string) (*domain.User, error) {
 	for _, user := range r.users {
 		if user.ID == id {
 			return &user, nil
@@ -22,8 +22,9 @@ func (r MemoryUserRepository) GetUserByID(id string) (*domain.User, error) {
 	}
 	return nil, errors.New("user not found")
 }
-func (r MemoryUserRepository) GetUsers() ([]*domain.User, error) {
-	var result []*domain.User
+func (r *MemoryUserRepository) GetUsers() ([]*domain.User, error) {
+	result := []*domain.User{}
+
 	for i := range r.users {
 		result = append(result, &r.users[i])
 	}

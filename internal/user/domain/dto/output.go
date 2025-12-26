@@ -6,5 +6,4 @@ type UserOutput struct {
 	LastName  string
 	Email     string
 	UserName  string
-	Password  string
 }

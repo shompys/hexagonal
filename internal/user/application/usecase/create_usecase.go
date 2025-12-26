@@ -7,7 +7,7 @@ import (
 
 func (uc *UserUseCase) CreateUser(userDTO *dto.UserCreateInput) (*dto.UserOutput, error) {
 
-	userEntity, err := uc.userRepository.Create(&domain.User{
+	userEntity, err := uc.UserRepository.Create(&domain.User{
 		ID:           "",
 		FirstName:    userDTO.FirstName,
 		LastName:     userDTO.LastName,
@@ -25,6 +25,5 @@ func (uc *UserUseCase) CreateUser(userDTO *dto.UserCreateInput) (*dto.UserOutput
 		LastName:  userEntity.LastName,
 		Email:     userEntity.Email,
 		UserName:  userEntity.UserName,
-		Password:  userEntity.PasswordHash,
 	}, nil
 }

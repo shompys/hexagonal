@@ -24,7 +24,7 @@ const (
 	PasswordHash = "PasswordHash"
 )
 
-func NewInstance(id, firstName, lastName, email, userName string, passwordHash UserPasswordVO) (*User, error) {
+func NewUser(id, firstName, lastName, email, userName string, passwordHash UserPasswordVO) (*User, error) {
 
 	fields := map[string]string{
 		FirstName: firstName,

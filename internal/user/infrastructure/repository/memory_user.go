@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/shompys/hexagonal/internal/user/domain"
 )
@@ -12,8 +13,16 @@ type MemoryUserRepository struct {
 }
 
 func (r *MemoryUserRepository) Create(ctx context.Context, userEntity *domain.User) (*domain.User, error) {
-	r.users = append(r.users, *userEntity)
-	return userEntity, nil
+	newID := fmt.Sprintf("%d", len(r.users)+1)
+
+	user, err := domain.NewUser(newID, userEntity.FirstName(), userEntity.LastName(), userEntity.Email(), userEntity.UserName(), domain.RestoreUserPassword(userEntity.PasswordHash()))
+
+	if err != nil {
+		return nil, err
+	}
+
+	r.users = append(r.users, *user)
+	return user, nil
 }
 func (r *MemoryUserRepository) GetUserByID(ctx context.Context, id string) (*domain.User, error) {
 	for _, user := range r.users {

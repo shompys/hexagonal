@@ -7,6 +7,7 @@ import (
 )
 
 func (uc *UserUseCase) UpdateUser(ctx context.Context, userDTO *dto.UserUpdateInput) (*dto.UserOutput, error) {
+
 	return &dto.UserOutput{
 		ID:        "",
 		FirstName: "",

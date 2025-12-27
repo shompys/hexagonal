@@ -20,7 +20,7 @@ func NewRouter(h *handler.HandlerUser) *Router {
 
 func (r *Router) RegisterRoutes() {
 	r.mux.HandleFunc("GET /users", r.handler.GetUsers)
-	r.mux.HandleFunc("GET /users/{id}", r.handler.GetUser)
+	r.mux.HandleFunc("GET /users/{id}", r.handler.GetUserByID)
 	r.mux.HandleFunc("POST /users", r.handler.CreateUser)
 	r.mux.HandleFunc("PATCH /users/{id}", r.handler.UpdateUser)
 	r.mux.HandleFunc("DELETE /user/{id}", r.handler.DeleteUser)

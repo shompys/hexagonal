@@ -1,8 +1,12 @@
 package usecase
 
-import "github.com/shompys/hexagonal/internal/user/domain/dto"
+import (
+	"context"
 
-func (uc *UserUseCase) GetUserByID(id string) (*dto.UserOutput, error) {
+	"github.com/shompys/hexagonal/internal/user/domain/dto"
+)
+
+func (uc *UserUseCase) GetUserByID(ctx context.Context, id string) (*dto.UserOutput, error) {
 	return &dto.UserOutput{
 		ID:        "",
 		FirstName: "",

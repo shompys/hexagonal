@@ -8,7 +8,7 @@ import (
 )
 
 func (h *HandlerUser) GetUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := h.GetUserUseCase.GetUsers()
+	users, err := h.GetUserUseCase.GetUsers(r.Context())
 
 	w.Header().Set("Content-Type", "application/json")
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"log"
 	"net/http"
 
@@ -9,12 +10,18 @@ import (
 	httpAdapter "github.com/shompys/hexagonal/internal/user/infrastructure/adapters/http"
 	"github.com/shompys/hexagonal/internal/user/infrastructure/adapters/http/handler"
 	"github.com/shompys/hexagonal/internal/user/infrastructure/repository"
+	"github.com/shompys/hexagonal/pkg/hash"
 )
 
 func main() {
+
 	userRepo := &repository.MemoryUserRepository{}
+
+	passwordHasher := hash.PasswordHasher{}
+
 	userUC := &usecase.UserUseCase{
 		UserRepository: userRepo,
+		PasswordHasher: passwordHasher,
 	}
 	userHandler := &handler.HandlerUser{
 		GetUserUseCase: userUC,

@@ -1,11 +1,15 @@
 package ports
 
-import "github.com/shompys/hexagonal/internal/user/domain/dto"
+import (
+	"context"
+
+	"github.com/shompys/hexagonal/internal/user/domain/dto"
+)
 
 type UserUseCases interface {
-	CreateUser(userDTO *dto.UserCreateInput) (*dto.UserOutput, error)
-	GetUserByID(id string) (*dto.UserOutput, error)
-	GetUsers() ([]*dto.UserOutput, error)
-	UpdateUser(userDTO *dto.UserUpdateInput) (*dto.UserOutput, error)
-	DeleteUser(id string) error
+	CreateUser(ctx context.Context, userDTO *dto.UserCreateInput) (*dto.UserOutput, error)
+	GetUserByID(ctx context.Context, id string) (*dto.UserOutput, error)
+	GetUsers(ctx context.Context) ([]*dto.UserOutput, error)
+	UpdateUser(ctx context.Context, userDTO *dto.UserUpdateInput) (*dto.UserOutput, error)
+	DeleteUser(ctx context.Context, id string) error
 }

@@ -9,8 +9,9 @@ import (
 func TestHashPassword(t *testing.T) {
 	password := "securepassword123"
 
+	hasher := PasswordHasher{}
 	// Generar el hash
-	hash, err := HashPassword(password)
+	hash, err := hasher.HashPassword(password)
 
 	if err != nil {
 		t.Fatalf("Error al generar el hash: %v", err)

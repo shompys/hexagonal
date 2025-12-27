@@ -1,29 +1,34 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/shompys/hexagonal/internal/user/domain"
 	"github.com/shompys/hexagonal/internal/user/domain/dto"
 )
 
-func (uc *UserUseCase) CreateUser(userDTO *dto.UserCreateInput) (*dto.UserOutput, error) {
+func (uc *UserUseCase) CreateUser(ctx context.Context, userDTO *dto.UserCreateInput) (*dto.UserOutput, error) {
 
-	userEntity, err := uc.UserRepository.Create(&domain.User{
-		ID:           "",
-		FirstName:    userDTO.FirstName,
-		LastName:     userDTO.LastName,
-		Email:        userDTO.Email,
-		UserName:     userDTO.UserName,
-		PasswordHash: userDTO.Password,
-	})
+	password, err := domain.NewUserPassword(userDTO.Password, uc.PasswordHasher)
+	if err != nil {
+		return nil, err //TODO: wrap error
+	}
+
+	user, err := domain.NewInstance("", userDTO.FirstName, userDTO.LastName, userDTO.Email, userDTO.UserName, password)
+	if err != nil {
+		return nil, err //TODO: wrap error
+	}
+
+	userEntity, err := uc.UserRepository.Create(ctx, user)
 	if err != nil {
 		return nil, err //TODO: wrap error
 	}
 
 	return &dto.UserOutput{
-		ID:        userEntity.ID,
-		FirstName: userEntity.FirstName,
-		LastName:  userEntity.LastName,
-		Email:     userEntity.Email,
-		UserName:  userEntity.UserName,
+		ID:        userEntity.ID(),
+		FirstName: userEntity.FirstName(),
+		LastName:  userEntity.LastName(),
+		Email:     userEntity.Email(),
+		UserName:  userEntity.UserName(),
 	}, nil
 }

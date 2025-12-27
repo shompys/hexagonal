@@ -1,5 +1,9 @@
 package usecase
 
-func (uc *UserUseCase) DeleteUser(id string) error {
+import (
+	"context"
+)
+
+func (uc *UserUseCase) DeleteUser(ctx context.Context, id string) error {
 	return nil
 }

@@ -12,7 +12,7 @@ func (h *HandlerUser) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user handlerDTO.CreateRequest
 	json.NewDecoder(r.Body).Decode(&user)
 
-	userCreated, err := h.GetUserUseCase.CreateUser(&domainDTO.UserCreateInput{
+	userCreated, err := h.GetUserUseCase.CreateUser(r.Context(), &domainDTO.UserCreateInput{
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
 		Email:     user.Email,

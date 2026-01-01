@@ -4,15 +4,21 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sync"
 
 	"github.com/shompys/hexagonal/internal/user/domain"
 )
 
 type MemoryUserRepository struct {
+	mu    sync.RWMutex
 	users []*domain.User
 }
 
 func (r *MemoryUserRepository) Create(ctx context.Context, userEntity *domain.User) (*domain.User, error) {
+
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
 	newID := fmt.Sprintf("%d", len(r.users)+1)
 
 	id, err := domain.NewUserID(newID)
@@ -29,6 +35,9 @@ func (r *MemoryUserRepository) Create(ctx context.Context, userEntity *domain.Us
 
 func (r *MemoryUserRepository) GetUserByID(ctx context.Context, id domain.UserIDVO) (*domain.User, error) {
 
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
 	for _, user := range r.users {
 
 		if user.ID() == id.Value() {
@@ -39,6 +48,9 @@ func (r *MemoryUserRepository) GetUserByID(ctx context.Context, id domain.UserID
 }
 
 func (r *MemoryUserRepository) GetUsers(ctx context.Context) ([]*domain.User, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
 	result := []*domain.User{}
 
 	for i := range r.users {
@@ -48,6 +60,10 @@ func (r *MemoryUserRepository) GetUsers(ctx context.Context) ([]*domain.User, er
 }
 
 func (r *MemoryUserRepository) UpdateUser(ctx context.Context, id domain.UserIDVO, userEntity *domain.User) (*domain.User, error) {
+
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
 	for i, user := range r.users {
 		if user.ID() == id.Value() {
 			r.users[i] = userEntity
@@ -57,6 +73,9 @@ func (r *MemoryUserRepository) UpdateUser(ctx context.Context, id domain.UserIDV
 	return nil, errors.New("user not found")
 }
 func (r *MemoryUserRepository) DeleteUser(ctx context.Context, id domain.UserIDVO) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
 	for i, user := range r.users {
 		if user.ID() == id.Value() {
 			//[123, 4, 56] aca esta pasando que para eliminar el elemento los saltea

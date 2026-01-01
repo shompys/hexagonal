@@ -52,6 +52,17 @@ func NewUser(firstName, lastName, email, userName string, passwordHash UserPassw
 	}, nil
 }
 
+func RestoreUser(id UserIDVO, firstName, lastName, email, userName string, passwordHash UserPasswordVO) *User {
+	return &User{
+		id:           id,
+		firstName:    firstName,
+		lastName:     lastName,
+		email:        email,
+		userName:     userName,
+		passwordHash: passwordHash,
+	}
+}
+
 func (u *User) ID() string           { return u.id.Value() }
 func (u *User) FirstName() string    { return u.firstName }
 func (u *User) LastName() string     { return u.lastName }

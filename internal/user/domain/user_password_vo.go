@@ -19,7 +19,7 @@ type UserPasswordVO struct {
 func NewUserPassword(rawPassword string, hasher PasswordHasher) (UserPasswordVO, error) {
 
 	if err := validation.ValidateStringNotEmpty(PasswordHash, rawPassword); err != nil {
-		return UserPasswordVO{}, errors.New(err.Error())
+		return UserPasswordVO{}, err
 	}
 	// 1. REGLA DE NEGOCIO: Validamos la contraseña ANTES de hashearla
 	if len(rawPassword) < 8 {

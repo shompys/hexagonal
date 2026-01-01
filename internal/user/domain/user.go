@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-	id           string
+	id           UserIDVO
 	firstName    string
 	lastName     string
 	email        string
@@ -24,7 +24,7 @@ const (
 	PasswordHash = "PasswordHash"
 )
 
-func NewUser(id, firstName, lastName, email, userName string, passwordHash UserPasswordVO) (*User, error) {
+func NewUser(firstName, lastName, email, userName string, passwordHash UserPasswordVO) (*User, error) {
 
 	fields := map[string]string{
 		FirstName: firstName,
@@ -35,7 +35,7 @@ func NewUser(id, firstName, lastName, email, userName string, passwordHash UserP
 
 	for fieldName, value := range fields {
 		if err := validation.ValidateStringNotEmpty(fieldName, value); err != nil {
-			return nil, errors.New(err.Error())
+			return nil, err
 		}
 	}
 
@@ -44,39 +44,42 @@ func NewUser(id, firstName, lastName, email, userName string, passwordHash UserP
 	}
 
 	return &User{
-		id,
-		firstName,
-		lastName,
-		email,
-		userName,
-		passwordHash,
+		firstName:    firstName,
+		lastName:     lastName,
+		email:        email,
+		userName:     userName,
+		passwordHash: passwordHash,
 	}, nil
 }
 
-func (u *User) ID() string           { return u.id }
+func (u *User) ID() string           { return u.id.Value() }
 func (u *User) FirstName() string    { return u.firstName }
 func (u *User) LastName() string     { return u.lastName }
 func (u *User) Email() string        { return u.email }
 func (u *User) UserName() string     { return u.userName }
 func (u *User) PasswordHash() string { return u.passwordHash.Value() }
 
+func (u *User) SetID(id UserIDVO) {
+	u.id = id
+}
+
 func (u *User) SetFirstName(firstName string) error {
 	if err := validation.ValidateStringNotEmpty(FirstName, firstName); err != nil {
-		return errors.New(err.Error())
+		return err
 	}
 	u.firstName = firstName
 	return nil
 }
 func (u *User) SetLastName(lastName string) error {
 	if err := validation.ValidateStringNotEmpty(LastName, lastName); err != nil {
-		return errors.New(err.Error())
+		return err
 	}
 	u.lastName = lastName
 	return nil
 }
 func (u *User) SetEmail(email string) error {
 	if err := validation.ValidateStringNotEmpty(Email, email); err != nil {
-		return errors.New(err.Error())
+		return err
 	}
 	if ok := validation.IsEmailValid(email); !ok {
 		return errors.New("invalid email format")
@@ -86,7 +89,7 @@ func (u *User) SetEmail(email string) error {
 }
 func (u *User) SetUserName(userName string) error {
 	if err := validation.ValidateStringNotEmpty(UserName, userName); err != nil {
-		return errors.New(err.Error())
+		return err
 	}
 	u.userName = userName
 	return nil

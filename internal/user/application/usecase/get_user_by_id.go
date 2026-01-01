@@ -3,12 +3,19 @@ package usecase
 import (
 	"context"
 
+	"github.com/shompys/hexagonal/internal/user/domain"
 	"github.com/shompys/hexagonal/internal/user/domain/dto"
 )
 
 func (uc *UserUseCase) GetUserByID(ctx context.Context, id string) (*dto.UserOutput, error) {
 
-	user, err := uc.UserRepository.GetUserByID(ctx, id)
+	idVO, err := domain.NewUserID(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := uc.UserRepository.GetUserByID(ctx, idVO)
 
 	if err != nil {
 		return nil, err //TODO: wrap error

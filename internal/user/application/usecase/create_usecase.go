@@ -14,7 +14,7 @@ func (uc *UserUseCase) CreateUser(ctx context.Context, userDTO *dto.UserCreateIn
 		return nil, err //TODO: wrap error
 	}
 
-	user, err := domain.NewUser("", userDTO.FirstName, userDTO.LastName, userDTO.Email, userDTO.UserName, password)
+	user, err := domain.NewUser(userDTO.FirstName, userDTO.LastName, userDTO.Email, userDTO.UserName, password)
 	if err != nil {
 		return nil, err //TODO: wrap error
 	}

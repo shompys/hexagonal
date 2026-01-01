@@ -11,11 +11,6 @@ func (h *HandlerUser) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
 	w.Header().Set("Content-Type", "application/json")
-	if id == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": "id is required"})
-		return
-	}
 
 	userDTO, err := h.GetUserUseCase.GetUserByID(r.Context(), id)
 

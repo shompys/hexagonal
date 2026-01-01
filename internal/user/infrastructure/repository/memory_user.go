@@ -9,51 +9,56 @@ import (
 )
 
 type MemoryUserRepository struct {
-	users []domain.User
+	users []*domain.User
 }
 
 func (r *MemoryUserRepository) Create(ctx context.Context, userEntity *domain.User) (*domain.User, error) {
 	newID := fmt.Sprintf("%d", len(r.users)+1)
 
-	user, err := domain.NewUser(newID, userEntity.FirstName(), userEntity.LastName(), userEntity.Email(), userEntity.UserName(), domain.RestoreUserPassword(userEntity.PasswordHash()))
+	id, err := domain.NewUserID(newID)
 
 	if err != nil {
 		return nil, err
 	}
 
-	r.users = append(r.users, *user)
-	return user, nil
+	userEntity.SetID(id)
+
+	r.users = append(r.users, userEntity)
+	return userEntity, nil
 }
-func (r *MemoryUserRepository) GetUserByID(ctx context.Context, id string) (*domain.User, error) {
+
+func (r *MemoryUserRepository) GetUserByID(ctx context.Context, id domain.UserIDVO) (*domain.User, error) {
+
 	for _, user := range r.users {
 
-		if user.ID() == id {
-			return &user, nil
+		if user.ID() == id.Value() {
+			return user, nil
 		}
 	}
 	return nil, errors.New("user not found")
 }
+
 func (r *MemoryUserRepository) GetUsers(ctx context.Context) ([]*domain.User, error) {
 	result := []*domain.User{}
 
 	for i := range r.users {
-		result = append(result, &r.users[i])
+		result = append(result, r.users[i])
 	}
 	return result, nil
 }
 
-func (r *MemoryUserRepository) UpdateUser(ctx context.Context, id string, userEntity *domain.User) (*domain.User, error) {
+func (r *MemoryUserRepository) UpdateUser(ctx context.Context, id domain.UserIDVO, userEntity *domain.User) (*domain.User, error) {
 	for i, user := range r.users {
-		if user.ID() == id {
-			r.users[i] = *userEntity
+		if user.ID() == id.Value() {
+			r.users[i] = userEntity
 			return userEntity, nil
 		}
 	}
 	return nil, errors.New("user not found")
 }
-func (r *MemoryUserRepository) DeleteUser(ctx context.Context, id string) error {
+func (r *MemoryUserRepository) DeleteUser(ctx context.Context, id domain.UserIDVO) error {
 	for i, user := range r.users {
-		if user.ID() == id {
+		if user.ID() == id.Value() {
 			//[123, 4, 56] aca esta pasando que para eliminar el elemento los saltea
 			// [123, 56]
 			r.users = append(r.users[:i], r.users[i+1:]...)

@@ -5,14 +5,18 @@ import (
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/shompys/hexagonal/internal/user/domain/ports"
 )
 
-func InitialModel() tea.Model {
+func InitialModel(
+	UserUseCase ports.UserUseCases,
+) tea.Model {
 	inputValue := textinput.New()
 	inputValue.Focus()
 	return StateTUI{
 		viewWelcome,
 		inputValue,
+		UserUseCase,
 	}
 }
 
@@ -46,6 +50,8 @@ func (m StateTUI) View() string {
 		return m.viewWelcome()
 	case viewForm:
 		return fmt.Sprintf("Escribí cualquier cosa:\n%s\n (esc para salir)", m.inputValue.View())
+	case viewUserTable:
+		return m.viewUsersTable(ctx)
 	default:
 		return "default"
 	}

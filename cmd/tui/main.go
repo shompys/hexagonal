@@ -9,9 +9,9 @@ import (
 )
 
 func main() {
-	bootstrap.InitializeUser()
+	userDeps := bootstrap.InitializeUser()
 	// Inicializar dependencias de usuario
-	Model := tui.InitialModel()
+	Model := tui.InitialModel(userDeps.UseCase)
 
 	p := tea.NewProgram(Model, tea.WithAltScreen())
 	_, err := p.Run()

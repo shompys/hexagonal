@@ -23,7 +23,7 @@ var (
 			Foreground(gray)
 )
 
-func (m StateTUI) viewWelcome() string {
+func (s StateTUI) viewWelcome() string {
 	bannerRaw := `
   ____  _                                          
  / ___|| |__   ___  _ __ ___  _ __  _   _ ___      

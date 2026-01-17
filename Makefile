@@ -12,14 +12,14 @@ run:
 
 # Compilar binario
 build:
-	@echo "🔨 Compilando binario..."
+	@echo "🔨 Compilando binario..." 
 	@go build -o bin/app cmd/api/main.go
 	@go build -o bin/tui cmd/tui/main.go
 	@echo "✅ Binario creado en bin/app"
 
 build-without-debug:
 	@echo "🔨 Compilando binario..."
-	@go build -ldflags="-s -w" -o bin/app cmd/api/main.go
+	@go build -ldflags="-s -w" -o bin/app cmd/api/main.go 
 	@go build -ldflags="-s -w" -o bin/tui cmd/tui/main.go
 	@echo "✅ Binario creado en bin/app"
 

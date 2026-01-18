@@ -5,11 +5,10 @@ import (
 	"net/http"
 
 	domainDTO "github.com/shompys/hexagonal/internal/user/domain/dto"
-	handlerDTO "github.com/shompys/hexagonal/internal/user/infrastructure/adapters/http/handler/dto"
 )
 
 func (h *HandlerUser) CreateUser(w http.ResponseWriter, r *http.Request) {
-	var user handlerDTO.CreateRequest
+	var user CreateRequest
 	json.NewDecoder(r.Body).Decode(&user)
 
 	userCreated, err := h.GetUserUseCase.CreateUser(r.Context(), &domainDTO.UserCreateInput{
@@ -29,7 +28,7 @@ func (h *HandlerUser) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 
-	json.NewEncoder(w).Encode(handlerDTO.Response{
+	json.NewEncoder(w).Encode(Response{
 		ID:        userCreated.ID,
 		FirstName: userCreated.FirstName,
 		LastName:  userCreated.LastName,

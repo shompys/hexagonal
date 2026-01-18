@@ -5,14 +5,13 @@ import (
 	"net/http"
 
 	domainDTO "github.com/shompys/hexagonal/internal/user/domain/dto"
-	handlerDTO "github.com/shompys/hexagonal/internal/user/infrastructure/adapters/http/handler/dto"
 )
 
 func (h *HandlerUser) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	id := r.PathValue("id")
 
-	var user handlerDTO.UpdateRequest
+	var user UpdateRequest
 	json.NewDecoder(r.Body).Decode(&user)
 
 	userUpdated, err := h.GetUserUseCase.UpdateUser(r.Context(), id, &domainDTO.UserUpdateInput{
@@ -30,7 +29,7 @@ func (h *HandlerUser) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 
-	json.NewEncoder(w).Encode(handlerDTO.Response{
+	json.NewEncoder(w).Encode(Response{
 		ID:        userUpdated.ID,
 		FirstName: userUpdated.FirstName,
 		LastName:  userUpdated.LastName,

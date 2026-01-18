@@ -35,3 +35,7 @@ func isValidID(id string) bool {
 func (v UserIDVO) Value() string {
 	return v.value
 }
+
+func RestoreUserID(id string) UserIDVO {
+	return UserIDVO{value: id} // No valida, solo asigna
+}

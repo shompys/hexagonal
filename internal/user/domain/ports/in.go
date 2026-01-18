@@ -6,6 +6,7 @@ import (
 	"github.com/shompys/hexagonal/internal/user/domain/dto"
 )
 
+// Contrato para el handler, es el como se conecta el useCase al handler
 type UserUseCases interface {
 	CreateUser(ctx context.Context, userDTO *dto.UserCreateInput) (*dto.UserOutput, error)
 	GetUserByID(ctx context.Context, id string) (*dto.UserOutput, error)

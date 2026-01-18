@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"time"
 
 	"github.com/shompys/hexagonal/pkg/validation"
 )
@@ -13,6 +14,8 @@ type User struct {
 	email        string
 	userName     string
 	passwordHash UserPasswordVO //debe pasarse sin puntero porque esto asegura que es valido por ende no pueden poner nil
+	createdAt    time.Time
+	updatedAt    time.Time
 }
 
 const (
@@ -43,16 +46,20 @@ func NewUser(firstName, lastName, email, userName string, passwordHash UserPassw
 		return nil, errors.New("invalid email format")
 	}
 
+	now := time.Now()
+
 	return &User{
 		firstName:    firstName,
 		lastName:     lastName,
 		email:        email,
 		userName:     userName,
 		passwordHash: passwordHash,
+		createdAt:    now,
+		updatedAt:    now,
 	}, nil
 }
 
-func RestoreUser(id UserIDVO, firstName, lastName, email, userName string, passwordHash UserPasswordVO) *User {
+func RestoreUser(id UserIDVO, firstName, lastName, email, userName string, passwordHash UserPasswordVO, createdAt, updatedAt time.Time) *User {
 	return &User{
 		id:           id,
 		firstName:    firstName,
@@ -60,6 +67,8 @@ func RestoreUser(id UserIDVO, firstName, lastName, email, userName string, passw
 		email:        email,
 		userName:     userName,
 		passwordHash: passwordHash,
+		createdAt:    createdAt,
+		updatedAt:    updatedAt,
 	}
 }
 
@@ -69,6 +78,8 @@ func (u *User) LastName() string     { return u.lastName }
 func (u *User) Email() string        { return u.email }
 func (u *User) UserName() string     { return u.userName }
 func (u *User) PasswordHash() string { return u.passwordHash.Value() }
+func (u *User) CreatedAt() time.Time { return u.createdAt }
+func (u *User) UpdatedAt() time.Time { return u.updatedAt }
 
 func (u *User) SetID(id UserIDVO) {
 	u.id = id
@@ -79,6 +90,7 @@ func (u *User) SetFirstName(firstName string) error {
 		return err
 	}
 	u.firstName = firstName
+	u.updatedAt = time.Now()
 	return nil
 }
 func (u *User) SetLastName(lastName string) error {
@@ -86,6 +98,7 @@ func (u *User) SetLastName(lastName string) error {
 		return err
 	}
 	u.lastName = lastName
+	u.updatedAt = time.Now()
 	return nil
 }
 func (u *User) SetEmail(email string) error {
@@ -96,6 +109,7 @@ func (u *User) SetEmail(email string) error {
 		return errors.New("invalid email format")
 	}
 	u.email = email
+	u.updatedAt = time.Now()
 	return nil
 }
 func (u *User) SetUserName(userName string) error {
@@ -103,9 +117,11 @@ func (u *User) SetUserName(userName string) error {
 		return err
 	}
 	u.userName = userName
+	u.updatedAt = time.Now()
 	return nil
 }
 
 func (u *User) SetPasswordHash(passwordHash UserPasswordVO) {
 	u.passwordHash = passwordHash
+	u.updatedAt = time.Now()
 }

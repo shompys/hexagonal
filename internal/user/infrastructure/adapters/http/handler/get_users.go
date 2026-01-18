@@ -3,8 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-
-	handlerDTO "github.com/shompys/hexagonal/internal/user/infrastructure/adapters/http/handler/dto"
 )
 
 func (h *HandlerUser) GetUsers(w http.ResponseWriter, r *http.Request) {
@@ -18,10 +16,10 @@ func (h *HandlerUser) GetUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := []*handlerDTO.Response{}
+	response := []*Response{}
 
 	for _, u := range users {
-		response = append(response, &handlerDTO.Response{
+		response = append(response, &Response{
 			ID:        u.ID,
 			FirstName: u.FirstName,
 			LastName:  u.LastName,

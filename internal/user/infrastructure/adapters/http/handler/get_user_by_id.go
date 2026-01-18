@@ -3,8 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-
-	handlerDTO "github.com/shompys/hexagonal/internal/user/infrastructure/adapters/http/handler/dto"
 )
 
 func (h *HandlerUser) GetUserByID(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +18,7 @@ func (h *HandlerUser) GetUserByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&handlerDTO.Response{
+	json.NewEncoder(w).Encode(&Response{
 		ID:        userDTO.ID,
 		FirstName: userDTO.FirstName,
 		LastName:  userDTO.LastName,

@@ -32,3 +32,6 @@ go.work.sum
 .vscode/*
 !.vscode/launch.json
 
+# volumes
+
+db

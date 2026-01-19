@@ -18,12 +18,14 @@ func (uc *UserUseCase) GetUserByID(ctx context.Context, id string) (*dto.UserOut
 
 	user, err := uc.UserRepository.GetUserByID(ctx, idVO)
 
-	if user.Status() != domain.StatusActive {
-		return nil, fmt.Errorf("user not found")
-	}
 	if err != nil {
 		return nil, err //TODO: wrap error
 	}
+
+	if user.Status() != domain.StatusActive {
+		return nil, fmt.Errorf("user not found")
+	}
+
 	return &dto.UserOutput{
 		ID:        user.ID(),
 		FirstName: user.FirstName(),

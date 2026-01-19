@@ -14,17 +14,22 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
+type statusChangeDB struct {
+	Status    domain.UserStatus `bson:"status"`
+	ChangedAt time.Time         `bson:"changedAt"`
+}
+
 type userDB struct {
-	ID            bson.ObjectID          `bson:"_id,omitempty"`
-	FirstName     string                 `bson:"firstName"`
-	LastName      string                 `bson:"lastName"`
-	Email         string                 `bson:"email"`
-	UserName      string                 `bson:"userName"`
-	Password      string                 `bson:"password"`
-	CreatedAt     time.Time              `bson:"createdAt"`
-	UpdatedAt     time.Time              `bson:"updatedAt"`
-	Status        domain.UserStatus      `bson:"status"`
-	StatusHistory []domain.StatusChanges `bson:"statusHistory"`
+	ID            bson.ObjectID     `bson:"_id,omitempty"`
+	FirstName     string            `bson:"firstName"`
+	LastName      string            `bson:"lastName"`
+	Email         string            `bson:"email"`
+	UserName      string            `bson:"userName"`
+	Password      string            `bson:"password"`
+	CreatedAt     time.Time         `bson:"createdAt"`
+	UpdatedAt     time.Time         `bson:"updatedAt"`
+	Status        domain.UserStatus `bson:"status"`
+	StatusHistory []statusChangeDB  `bson:"statusHistory"`
 }
 
 type MongoUserRepository struct {
@@ -37,6 +42,15 @@ func NewMongoUserRepository(db *mongo.Database) *MongoUserRepository {
 
 func (m *MongoUserRepository) Create(ctx context.Context, userEntity *domain.User) (*domain.User, error) {
 
+	statusHistoryDB := make([]statusChangeDB, len(userEntity.StatusHistory()))
+
+	for i, history := range userEntity.StatusHistory() {
+		statusHistoryDB[i] = statusChangeDB{
+			Status:    history.Status,
+			ChangedAt: history.ChangedAt,
+		}
+	}
+
 	userResult, err := m.db.InsertOne(ctx, &userDB{
 		FirstName:     userEntity.FirstName(),
 		LastName:      userEntity.LastName(),
@@ -46,7 +60,7 @@ func (m *MongoUserRepository) Create(ctx context.Context, userEntity *domain.Use
 		CreatedAt:     userEntity.CreatedAt(),
 		UpdatedAt:     userEntity.UpdatedAt(),
 		Status:        userEntity.Status(),
-		StatusHistory: userEntity.StatusHistory(),
+		StatusHistory: statusHistoryDB,
 	})
 
 	if err != nil {
@@ -81,6 +95,15 @@ func (m *MongoUserRepository) GetUserByID(ctx context.Context, id domain.UserIDV
 		return nil, err
 	}
 
+	statusHistoryDomain := make([]domain.StatusChanges, len(userDB.StatusHistory))
+
+	for i, history := range userDB.StatusHistory {
+		statusHistoryDomain[i] = domain.StatusChanges{
+			Status:    history.Status,
+			ChangedAt: history.ChangedAt,
+		}
+	}
+
 	return domain.RestoreUser(
 		id,
 		userDB.FirstName,
@@ -91,7 +114,7 @@ func (m *MongoUserRepository) GetUserByID(ctx context.Context, id domain.UserIDV
 		userDB.CreatedAt,
 		userDB.UpdatedAt,
 		userDB.Status,
-		userDB.StatusHistory,
+		statusHistoryDomain,
 	), nil
 }
 
@@ -151,6 +174,16 @@ func (m *MongoUserRepository) GetUsers(ctx context.Context, filters dto.Filters)
 		if err := cursor.Decode(&userDB); err != nil {
 			return nil, fmt.Errorf("decoding error: %w", err)
 		}
+
+		statusHistoryDomain := make([]domain.StatusChanges, len(userDB.StatusHistory))
+
+		for i, history := range userDB.StatusHistory {
+			statusHistoryDomain[i] = domain.StatusChanges{
+				Status:    history.Status,
+				ChangedAt: history.ChangedAt,
+			}
+		}
+
 		users = append(users, domain.RestoreUser(
 			domain.RestoreUserID(userDB.ID.Hex()),
 			userDB.FirstName,
@@ -161,7 +194,7 @@ func (m *MongoUserRepository) GetUsers(ctx context.Context, filters dto.Filters)
 			userDB.CreatedAt,
 			userDB.UpdatedAt,
 			userDB.Status,
-			userDB.StatusHistory,
+			statusHistoryDomain,
 		))
 	}
 	if err := cursor.Err(); err != nil {

@@ -12,7 +12,13 @@ func (h *HandlerUser) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
 	var user UpdateRequest
-	json.NewDecoder(r.Body).Decode(&user)
+
+	w.Header().Set("Content-Type", "application/json")
+
+	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	userUpdated, err := h.GetUserUseCase.UpdateUser(r.Context(), id, &domainDTO.UserUpdateInput{
 		FirstName: user.FirstName,
@@ -21,9 +27,9 @@ func (h *HandlerUser) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		UserName:  user.UserName,
 		Password:  user.Password,
 	})
-	w.Header().Set("Content-Type", "application/json")
 
 	if err != nil {
+		//hay que bifurcar
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

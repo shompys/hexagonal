@@ -23,7 +23,8 @@ func (r *Router) RegisterRoutes() {
 	r.mux.HandleFunc("GET /users/{id}", r.handler.GetUserByID)
 	r.mux.HandleFunc("POST /users", r.handler.CreateUser)
 	r.mux.HandleFunc("PATCH /users/{id}", r.handler.UpdateUser)
-	r.mux.HandleFunc("DELETE /user/{id}", r.handler.DeleteUser)
+	r.mux.HandleFunc("DELETE /users/{id}", r.handler.DeleteUser)
+	r.mux.HandleFunc("DELETE /users/{id}/soft", r.handler.DeleteSoftUser)
 }
 func (r *Router) Handler() *http.ServeMux {
 	return r.mux

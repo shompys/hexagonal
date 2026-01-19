@@ -3,10 +3,24 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/shompys/hexagonal/internal/user/domain"
+	"github.com/shompys/hexagonal/internal/user/domain/dto"
 )
 
 func (h *HandlerUser) GetUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := h.GetUserUseCase.GetUsers(r.Context())
+
+	q := r.URL.Query()
+
+	filters := dto.Filters{}
+
+	// asignación de filtros
+	if status := q.Get("status"); status != "" {
+		uStatus := domain.UserStatus(status)
+		filters.Status = &uStatus
+	}
+
+	users, err := h.GetUserUseCase.GetUsers(r.Context(), filters)
 
 	w.Header().Set("Content-Type", "application/json")
 

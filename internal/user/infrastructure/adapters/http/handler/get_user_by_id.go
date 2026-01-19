@@ -13,6 +13,7 @@ func (h *HandlerUser) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	userDTO, err := h.GetUserUseCase.GetUserByID(r.Context(), id)
 
 	if err != nil {
+		//TODO: generar errores custom para distingir status
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 		return

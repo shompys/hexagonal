@@ -19,6 +19,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)
+
 	cfg := storage.Config{
 		User:     os.Getenv("MONGO_USERNAME"),
 		Password: os.Getenv("MONGO_PASSWORD"),

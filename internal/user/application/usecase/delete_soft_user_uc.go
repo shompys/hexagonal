@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 
 	"github.com/shompys/hexagonal/internal/user/domain"
 )
@@ -20,7 +21,7 @@ func (uc *UserUseCase) DeleteSoftUser(ctx context.Context, id string) error {
 
 	if err := user.Deactivate(); err != nil {
 		// si esto falla listo retornamos se cancela el cambio, porque ya se encuentra desactivado
-		return err
+		return errors.New("user not found")
 	}
 
 	if err := uc.UserRepository.DeleteSoftUser(ctx, idVO, user); err != nil {

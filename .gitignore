@@ -31,6 +31,8 @@ go.work.sum
 # .idea/
 .vscode/*
 !.vscode/launch.json
+.zed/*
+!.zed/debug.json
 
 # volumes
 
